@@ -18,9 +18,9 @@ import readXlsxFile, { Row } from 'read-excel-file/node';
 import convertToJson from 'read-excel-file/schema';
 
 interface SKUMappingDto {
-  mercularSKU: string;
-  supplierSKU: string;
-  supplierId: string;
+  readonly mercularSKU: string;
+  readonly supplierSKU: string;
+  readonly supplierId: string;
 }
 
 const SKU_MAPPING_SCHEMA = {
