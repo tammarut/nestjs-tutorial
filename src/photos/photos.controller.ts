@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Controller,
   Get,
   InternalServerErrorException,
@@ -14,6 +15,29 @@ import fs from 'fs/promises';
 import multer from 'multer';
 import path from 'path';
 import readXlsxFile from 'read-excel-file/node';
+import convertToJson from 'read-excel-file/schema';
+
+interface SKUMappingDto {
+  mercularSKU: string;
+  supplierSKU: string;
+  supplierId: string;
+}
+
+const SKU_MAPPING_SCHEMA = {
+  'SKU Mercular': {
+    prop: 'mercularSKU',
+    type: String,
+  },
+  'SKU Sup.': {
+    prop: 'supplierSKU',
+    type: String,
+  },
+  'Sup.ID': {
+    prop: 'supplierId',
+    type: String,
+  },
+} as const;
+const SKU_MAPPING_COLUMN: ReadonlyArray<string> = Object.keys(SKU_MAPPING_SCHEMA);
 
 @Controller('photos')
 export class PhotoController {
@@ -43,10 +67,19 @@ export class PhotoController {
   async uploadSingle(@UploadedFile() file: Express.Multer.File) {
     try {
       const rows = await readXlsxFile(file.path);
+      const [headerRow] = rows;
+      if (headerRow.join() !== SKU_MAPPING_COLUMN.join()) {
+        throw new BadRequestException(
+          'Invalid column header, it should be: ' + SKU_MAPPING_COLUMN.join()
+        );
+      }
+      const contentRows = convertToJson(rows, SKU_MAPPING_SCHEMA);
+      const skuMappingDto: SKUMappingDto[] = contentRows['rows'];
       const response = {
         message: 'Upload successfully',
         originalname: file.originalname,
-        data: rows,
+        data: skuMappingDto,
+        dataLength: skuMappingDto.length,
       };
       return response;
     } catch (err) {
