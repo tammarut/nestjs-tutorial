@@ -14,7 +14,7 @@ import { Response } from 'express';
 import fs from 'fs/promises';
 import multer from 'multer';
 import path from 'path';
-import readXlsxFile from 'read-excel-file/node';
+import readXlsxFile, { Row } from 'read-excel-file/node';
 import convertToJson from 'read-excel-file/schema';
 
 interface SKUMappingDto {
@@ -61,36 +61,45 @@ export class PhotoController {
         }
         callback(null, true);
       },
-      // storage: memoryStorage(),
     })
   )
   async uploadSingle(@UploadedFile() file: Express.Multer.File) {
-    try {
-      const rows = await readXlsxFile(file.path);
-      const [headerRow] = rows;
-      if (headerRow.join() !== SKU_MAPPING_COLUMN.join()) {
-        throw new BadRequestException(
-          'Invalid column header, it should be: ' + SKU_MAPPING_COLUMN.join()
-        );
-      }
-      const contentRows = convertToJson(rows, SKU_MAPPING_SCHEMA);
-      const skuMappingDto: SKUMappingDto[] = contentRows['rows'];
-      const response = {
-        message: 'Upload successfully',
-        originalname: file.originalname,
-        data: skuMappingDto,
-        dataLength: skuMappingDto.length,
-      };
-      return response;
-    } catch (err) {
-      throw new InternalServerErrorException(err);
-    } finally {
-      fs.unlink(file.path);
+    const [fileContent, readExcelError] = await readExcelFile(file.path);
+    if (readExcelError) {
+      throw new InternalServerErrorException(readExcelError);
     }
+    if (fileContent.headerRow.join() !== SKU_MAPPING_COLUMN.join()) {
+      throw new BadRequestException(
+        'Invalid column header, it should be: ' + SKU_MAPPING_COLUMN.join()
+      );
+    }
+    const response = {
+      message: 'Upload successfully',
+      originalname: file.originalname,
+      data: fileContent.contentRows,
+      dataLength: fileContent.contentRows.length,
+    };
+    return response;
   }
 
   @Get('filename')
   getFilePath(@Param('filename') filename: string, @Res() response: Response) {
     return response.sendFile(filename, { root: './tmp/sku-mapping' });
+  }
+}
+
+type ExcelResult = [Optional<{ headerRow: Row; contentRows: SKUMappingDto[] }>, Optional<Error>];
+async function readExcelFile(filePath: string): Promise<ExcelResult> {
+  try {
+    const rows = await readXlsxFile(filePath);
+    const [headerRow] = rows;
+    const contentRows = convertToJson(rows, SKU_MAPPING_SCHEMA);
+    const skuMappingDto: SKUMappingDto[] = contentRows['rows'];
+
+    return [{ headerRow, contentRows: skuMappingDto }, null];
+  } catch (err) {
+    return [null, err];
+  } finally {
+    fs.unlink(filePath);
   }
 }
