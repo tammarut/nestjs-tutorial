@@ -6,13 +6,14 @@ import {
   Param,
   Post,
   Res,
+  UnsupportedMediaTypeException,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import fs from 'fs/promises';
-import multer from 'multer';
+// import multer from 'multer';
 import path from 'path';
 import readXlsxFile, { Row } from 'read-excel-file/node';
 import convertToJson from 'read-excel-file/schema';
@@ -43,21 +44,31 @@ const SKU_MAPPING_COLUMN: ReadonlyArray<string> = Object.keys(SKU_MAPPING_SCHEMA
 export class PhotoController {
   @Post('upload')
   @UseInterceptors(
+    // FileInterceptor('file', {
+    //   storage: multer.diskStorage({
+    //     destination: './tmp/sku-mapping',
+    //     filename: (_, file, callback) => {
+    //       const fileExtension = path.extname(file.originalname);
+    //       const filename = path.basename(file.originalname, fileExtension);
+    //       const randomSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    //       const newFilename = `${filename}_${randomSuffix}${fileExtension}`;
+    //       callback(null, newFilename);
+    //     },
+    //   }),
+    //   fileFilter: (_, file, callback) => {
+    //     const fileExtension = path.extname(file.originalname);
+    //     if (!fileExtension.includes('.xlsx')) {
+    //       return callback(new Error('Only Xlsx file are allowed!'), false);
+    //     }
+    //     callback(null, true);
+    //   },
+    // })
     FileInterceptor('file', {
-      storage: multer.diskStorage({
-        destination: './tmp/sku-mapping',
-        filename: (_, file, callback) => {
-          const fileExtension = path.extname(file.originalname);
-          const filename = path.basename(file.originalname, fileExtension);
-          const randomSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const newFilename = `${filename}_${randomSuffix}${fileExtension}`;
-          callback(null, newFilename);
-        },
-      }),
+      dest: './tmp/uploads/sku-mapping',
       fileFilter: (_, file, callback) => {
         const fileExtension = path.extname(file.originalname);
         if (!fileExtension.includes('.xlsx')) {
-          return callback(new Error('Only Xlsx file are allowed!'), false);
+          return callback(new UnsupportedMediaTypeException('Only Xlsx file are allowed!'), false);
         }
         callback(null, true);
       },
