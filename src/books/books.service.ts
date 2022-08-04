@@ -1,43 +1,51 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BOOK_EVENT_PUBLISHER, IBookEventPublisher } from './events/IBookEventPublisher';
 import { BOOKS } from './mocks/books.mock';
 
-type Books = typeof BOOKS
+export type Books = typeof BOOKS;
 
 @Injectable()
 export class BooksService {
-  private books: Books = BOOKS
+  private books: Books = BOOKS;
+
+  constructor(
+    @Inject(BOOK_EVENT_PUBLISHER)
+    private readonly bookEvent: IBookEventPublisher
+  ) {}
 
   getAllBooks(): Promise<Books> {
     return new Promise((resolve) => {
-      resolve(this.books)
-    })
+      resolve(this.books);
+    });
   }
 
   getBook(bookId: string) {
     return new Promise((resolve) => {
-      const book = this.books.find((book) => book.id === Number.parseInt(bookId))
+      const book = this.books.find((book) => book.id === Number.parseInt(bookId));
       if (!book) {
-        throw new NotFoundException('This bookId is not exist!')
+        throw new NotFoundException('This bookId is not exist!');
       }
-      resolve(book)
-    })
+      resolve(book);
+    });
   }
 
   addNewBook(book: any) {
     return new Promise((resolve) => {
-      this.books.push(book)
-      resolve(this.books)
-    })
+      this.books.push(book);
+      // this.eventEmitter.emit('books.created', new NewBookAddedEvent(book));
+      this.bookEvent.publishBookCreatedEvent(book);
+      resolve(this.books);
+    });
   }
 
   deleteBook(bookId: string) {
     return new Promise((resolve) => {
-      const index = this.books.findIndex((book) => book.id === Number.parseInt(bookId))
+      const index = this.books.findIndex((book) => book.id === Number.parseInt(bookId));
       if (index < 0) {
-        throw new NotFoundException('This bookId is not exist!')
+        throw new NotFoundException('This bookId is not exist!');
       }
-      this.books.splice(index, 1)
-      resolve(this.books)
-    })
+      this.books.splice(index, 1);
+      resolve(this.books);
+    });
   }
 }
