@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { BOOK_EVENT_PUBLISHER, IBookEventPublisher } from './events/IBookEventPublisher';
+import { BOOK_EVENT_PUBLISHER, IBookEventPublisher } from './publisher/IBookEventPublisher';
 import { BOOKS } from './mocks/books.mock';
 
 export type Books = typeof BOOKS;

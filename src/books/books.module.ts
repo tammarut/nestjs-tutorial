@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { BooksController } from './books.controller';
 import { BooksService } from './books.service';
-import { BOOK_EVENT_PUBLISHER } from './events/IBookEventPublisher';
-import { BookEventEmitter } from './events/newBookAdded.event';
+import { BookEventEmitter, BOOK_EVENT_PUBLISHER } from './publisher/IBookEventPublisher';
 
 @Module({
   controllers: [BooksController],

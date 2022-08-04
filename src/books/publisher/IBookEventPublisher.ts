@@ -7,3 +7,4 @@ export interface IBookEventPublisher {
 }
 
 export const BOOK_EVENT_PUBLISHER = 'BOOK_EVENT_PUBLISHER';
+export * from './adapter/bookEventEmitter.adapter';
