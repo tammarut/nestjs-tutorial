@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
-import { Books } from 'src/books/books.service';
-import { NewBookAddedEvent } from 'src/books/events/newBookAdded.event';
 import { setTimeout } from 'timers/promises';
+import { Books } from '../../books.service';
+import { NewBookAddedEvent } from '../../events/newBookAdded.event';
 import { IBookEventPublisher } from '../IBookEventPublisher';
 
 type Book = Books[0];

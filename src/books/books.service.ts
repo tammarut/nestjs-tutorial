@@ -10,7 +10,7 @@ export class BooksService {
 
   constructor(
     @Inject(BOOK_EVENT_PUBLISHER)
-    private readonly bookEvent: IBookEventPublisher
+    private readonly bookEventPublisher: IBookEventPublisher
   ) {}
 
   getAllBooks(): Promise<Books> {
@@ -33,7 +33,7 @@ export class BooksService {
     return new Promise((resolve) => {
       this.books.push(book);
       // this.eventEmitter.emit('books.created', new NewBookAddedEvent(book));
-      this.bookEvent.publishBookCreatedEvent(book);
+      this.bookEventPublisher.publishBookCreatedEvent(book);
       resolve(this.books);
     });
   }
