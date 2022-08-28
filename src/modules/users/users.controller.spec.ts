@@ -1,12 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateUserDTO } from './dto/CreateUserDTO';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
 const mockUserService = {
-  createNewUser: (createUserDTO: CreateUserDTO) => {
-    return { _id: 12, email: createUserDTO.email };
-  },
+  createNewUser: jest.fn((dto) => {
+    return { _id: 12, email: dto.email };
+  }),
+
+  updateUser: jest.fn().mockImplementationOnce((id, dto) => ({ id, ...dto })),
+  // createNewUser: (createUserDTO: CreateUserDTO) => {
+  //   return { _id: 12, email: createUserDTO.email };
+  // },
 };
 
 // class UserServiceStub {
@@ -17,20 +21,20 @@ const mockUserService = {
 
 describe('UsersController', () => {
   let controller: UsersController;
-  let usersService: UsersService;
+  // let usersService: UsersService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
-      providers: [UsersService],
+      providers: [UsersService, { provide: UsersService, useValue: mockUserService }],
     })
-      .overrideProvider(UsersService)
-      .useValue(mockUserService)
+      // .overrideProvider(UsersService)
+      // .useValue(mockUserService)
       // .useClass(UserServiceStub)
       .compile();
 
     controller = module.get<UsersController>(UsersController);
-    usersService = module.get<UsersService>(UsersService);
+    // usersService = module.get<UsersService>(UsersService);
   });
 
   it('should be defined', () => {
@@ -47,6 +51,15 @@ describe('UsersController', () => {
       _id: expect.any(Number),
       email: email,
     });
-    // expect(usersService.createNewUser).toHaveBeenCalledTimes(1);
+    expect(mockUserService.createNewUser).toHaveBeenCalledTimes(1);
+  });
+
+  it('should update a user', () => {
+    // Arrange
+    const email = 'new_Mark@gmail.com';
+    // Act
+    controller.update('12', { email });
+    // Assert
+    expect(mockUserService.updateUser).toHaveBeenCalledTimes(1);
   });
 });
