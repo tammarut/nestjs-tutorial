@@ -15,8 +15,11 @@
     "skipLibCheck": true,
     "strictNullChecks": false,
     "noImplicitAny": false,
+    "noImplicitOverride": true,
+    "noImplicitThis": true,
     "strictBindCallApply": false,
+    "strictFunctionTypes": true,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": true
   }
 }
