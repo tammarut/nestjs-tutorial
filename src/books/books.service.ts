@@ -3,6 +3,7 @@ import { BOOKS } from './mocks/books.mock';
 import { BOOK_EVENT_PUBLISHER, IBookEventPublisher } from './publisher/IBookEventPublisher';
 
 export type Books = typeof BOOKS;
+type ABook = Books[0];
 
 @Injectable()
 export class BooksService {
@@ -13,13 +14,17 @@ export class BooksService {
     private readonly bookEventPublisher: IBookEventPublisher
   ) {}
 
-  getAllBooks(): Promise<Books> {
+  get allBooks(): Readonly<Books> {
+    return this.books;
+  }
+
+  async getAllBooks(): Promise<Books> {
     return new Promise((resolve) => {
       resolve(this.books);
     });
   }
 
-  getBook(bookId: string) {
+  async getBook(bookId: string): Promise<ABook> {
     return new Promise((resolve) => {
       const book = this.books.find((book) => book.id === Number.parseInt(bookId));
       if (!book) {
@@ -29,7 +34,7 @@ export class BooksService {
     });
   }
 
-  addNewBook(book: any) {
+  async addNewBook(book: any): Promise<Books> {
     return new Promise((resolve) => {
       this.books.push(book);
       // this.eventEmitter.emit('books.created', new NewBookAddedEvent(book));
@@ -38,7 +43,7 @@ export class BooksService {
     });
   }
 
-  deleteBook(bookId: string) {
+  async deleteBook(bookId: string) {
     return new Promise((resolve) => {
       const index = this.books.findIndex((book) => book.id === Number.parseInt(bookId));
       if (index < 0) {
