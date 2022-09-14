@@ -1,36 +1,85 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BooksController } from './books.controller';
+import { BooksController, CreateBookDTO } from './books.controller';
 import { BooksService } from './books.service';
 
-describe('BooksController', () => {
-  let controller: BooksController;
+const fakeBooksService = {
+  getAllBooks: jest.fn(),
+  getBook: jest.fn(),
+  addNewBook: jest.fn(),
+  deleteBook: jest.fn(),
+};
 
-  beforeAll(async () => {
+describe('BooksController', () => {
+  let booksController: BooksController;
+  let bookService: BooksService;
+
+  beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [BooksController],
       providers: [
         BooksService,
         {
           provide: BooksService,
-          useValue: () => ({
-            getAllBooks: jest.fn().mockResolvedValueOnce([]),
-            getBook: jest.fn().mockResolvedValueOnce({}),
-            addNewBook: jest.fn().mockResolvedValueOnce([]),
-            deleteBook: jest.fn().mockResolvedValueOnce([]),
-          }),
+          // useClass: BooksServiceStub,
+          useValue: fakeBooksService,
         },
       ],
     }).compile();
 
-    controller = module.get<BooksController>(BooksController);
+    booksController = module.get<BooksController>(BooksController);
+    bookService = module.get(BooksService);
   });
 
-  beforeEach(() => {
+  afterEach(() => {
     jest.clearAllMocks();
     jest.resetAllMocks();
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  it('should get all books correctly', async () => {
+    // Arrange
+    const books = [];
+    fakeBooksService.getAllBooks.mockResolvedValueOnce(books);
+    // Act
+    const allBooks = await booksController.getAllBooks();
+    // Assert
+    expect(allBooks).toBeTruthy();
+    // expect(fakeBooksService.getAllBooks).toHaveBeenCalledTimes(1);
+    expect(bookService.getAllBooks).toHaveBeenCalledTimes(1);
+  });
+
+  it('should get a book by bookId correctly', async () => {
+    // Arrange
+    const mockBook = { id: '1' };
+    fakeBooksService.getBook.mockResolvedValueOnce(mockBook);
+    // Act
+    const book = await booksController.getBook('1');
+    // Assert
+    expect(book).toEqual({ id: '1' });
+    expect(bookService.getBook).toHaveBeenCalledTimes(1);
+  });
+
+  it('should add a new book correctly', async () => {
+    // Arrange
+    const newBook: CreateBookDTO = {
+      id: 98,
+      title: "The Devil's Discus",
+      author: 'Prem',
+      description: ' King Ra',
+    };
+    // Act
+    await booksController.addNewBook(newBook);
+    // Assert
+    expect(bookService.addNewBook).toHaveBeenCalledTimes(1);
+    expect(bookService.addNewBook).toHaveBeenCalledWith(newBook);
+  });
+
+  it('should delete a book correctly', async () => {
+    // Arrange
+    const bookId = '2';
+    // Act
+    await booksController.deleteBook({ bookId: bookId });
+    // Assert
+    expect(bookService.deleteBook).toHaveBeenCalledTimes(1);
+    expect(bookService.deleteBook).toHaveBeenCalledWith(bookId);
   });
 });

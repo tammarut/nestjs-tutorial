@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
 import { BooksService } from './books.service';
 
-class CreateBookDTO {
+export class CreateBookDTO {
   readonly id: number;
   readonly title: string;
   readonly description: string;
