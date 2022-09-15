@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { BooksService } from './books.service';
 
 export class CreateBookDTO {
@@ -25,6 +35,7 @@ export class BooksController {
   }
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   async addNewBook(@Body() createBookDTO: CreateBookDTO) {
     const books = await this.bookService.addNewBook(createBookDTO);
     return books;
