@@ -6,7 +6,12 @@ export class OrdersController {
   constructor(private readonly orderService: OrdersService) {}
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.orderService.findOne(id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    try {
+      const result = await this.orderService.findOne(id);
+      return result;
+    } catch (err) {
+      throw err;
+    }
   }
 }
