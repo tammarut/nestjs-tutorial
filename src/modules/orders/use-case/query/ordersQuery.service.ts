@@ -29,7 +29,7 @@ export class OrdersService {
         relations: { orderItems: true },
       });
       if (!order) {
-        this.logger.error(`Not found this orderId (${id})`);
+        this.logger.error({ id: 'query-order-error' }, `Not found this orderId (${id})`);
         throw new Error(`Not found this orderId ${id}`);
       }
       return order;
