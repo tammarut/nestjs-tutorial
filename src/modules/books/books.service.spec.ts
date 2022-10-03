@@ -52,7 +52,7 @@ describe('BooksService', () => {
     // Act
     const testFn = async () => await bookService.getBook(bookId);
     // Assert
-    expect(testFn()).rejects.toThrowError('This bookId is not exist!');
+    await expect(testFn()).rejects.toThrowError('This bookId is not exist!');
   });
 
   it('addNewBook, it should add a new book correctly', async () => {
@@ -82,6 +82,6 @@ describe('BooksService', () => {
     // Act
     const testFn = async () => await bookService.deleteBook(bookId);
     // Assert
-    expect(testFn()).rejects.toThrowError('This bookId is not exist!');
+    await expect(testFn()).rejects.toThrowError('This bookId is not exist!');
   });
 });
