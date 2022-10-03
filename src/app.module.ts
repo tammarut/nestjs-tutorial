@@ -3,7 +3,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { BooksModule } from './books/books.module';
+import { BooksModule } from './modules/books/books.module';
 import { LoggerMiddleware } from './infrastructure/middlewares/logger.middleware';
 import { OrdersModule } from './modules/orders/orders.module';
 import { PhotoModule } from './photos/photos.module';

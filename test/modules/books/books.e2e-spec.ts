@@ -2,7 +2,7 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { Test } from '@nestjs/testing';
 import NewRequest from 'supertest';
-import { BooksModule } from '../../../src/books/books.module';
+import { BooksModule } from '../../../src/modules/books/books.module';
 
 describe('BookController (End-to-end)', () => {
   let app: INestApplication;
