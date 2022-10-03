@@ -17,7 +17,8 @@
     "noImplicitAny": false,
     "noImplicitOverride": true,
     "noImplicitThis": true,
-    "strictBindCallApply": false,
+    "alwaysStrict": true,
+    "strictBindCallApply": true,
     "strictFunctionTypes": true,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": true
