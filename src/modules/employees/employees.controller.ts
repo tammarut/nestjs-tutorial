@@ -1,4 +1,4 @@
-import { Controller, Delete, Get } from '@nestjs/common';
+import { Controller, Delete, Get, Param } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 
 @Controller('employees')
@@ -9,9 +9,9 @@ export class EmployeesController {
   async seed() {
     return await this.employeeService.seed();
   }
-  @Get(':id')
-  async getEmployeeById() {
-    return this.employeeService.searchEmployeeById(7);
+  @Get(':employeeId')
+  async getEmployeeById(@Param('employeeId') employeeId: string) {
+    return this.employeeService.searchEmployeeById(+employeeId);
   }
 
   @Delete(':id')
