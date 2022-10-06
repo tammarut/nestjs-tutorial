@@ -7,7 +7,7 @@ import { LoggerModule } from 'nestjs-pino';
 import path from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { loadConfigsFromEnv } from './config';
+import { ConfigSchema, CONFIG_SCHEMA } from './config';
 import { BooksModule } from './modules/books/books.module';
 import { EmployeesModule } from './modules/employees/employees.module';
 import { OrdersModule } from './modules/orders/orders.module';
@@ -15,7 +15,14 @@ import { PhotoModule } from './photos/photos.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ load: [loadConfigsFromEnv] }),
+    // ConfigModule.forRoot({ load: [loadConfigsFromEnv] }),
+    ConfigModule.forRoot({
+      validationSchema: CONFIG_SCHEMA,
+      validationOptions: {
+        allowUnknown: true,
+        abortEarly: true,
+      },
+    }),
     LoggerModule.forRoot({
       pinoHttp: {
         transport: { target: 'pino-pretty', options: { singleLine: true } },
@@ -25,22 +32,22 @@ import { PhotoModule } from './photos/photos.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => {
+      useFactory: (configService: ConfigService<ConfigSchema>) => {
         return {
           type: 'mysql',
-          host: configService.get('DATABASE.HOST'),
-          username: configService.get('DATABASE.USERNAME'),
-          password: configService.get('DATABASE.PASSWORD'),
-          database: configService.get('DATABASE.DB_NAME'),
+          host: configService.get('DATABASE_HOST'),
+          username: configService.get('DATABASE_USERNAME'),
+          password: configService.get('DATABASE_PASSWORD'),
+          database: configService.get('DATABASE_NAME'),
           entities: [path.join(__dirname, './**/*.entity.{js,ts}')],
           // entities: [__dirname + '../**/*.entity{.ts,.js}'],
-          port: configService.get('DATABASE.PORT'),
+          port: configService.get('DATABASE_PORT'),
           ssl: {
             ca: fs.readFileSync('cacert-2022-07-19.pem'),
           },
           bigNumberStrings: false,
           synchronize: false,
-          logging: true,
+          logging: false,
         };
       },
     }),
