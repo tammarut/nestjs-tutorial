@@ -46,7 +46,7 @@ export class EmployeesService {
   }
 
   async searchEmployeeById(id: number) {
-    // return await this.employeeRepo.findOne({
+    // const employee = await this.employeeRepo.findOne({
     //   where: { id: id },
     //   relations: {
     //     contactInfo: true,
@@ -68,6 +68,6 @@ export class EmployeesService {
   }
 
   async deleteEmployeeById(id: number) {
-    return this.employeeRepo.delete(id);
+    return await this.employeeRepo.delete(id);
   }
 }

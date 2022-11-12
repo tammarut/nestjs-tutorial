@@ -9,13 +9,14 @@ export class EmployeesController {
   async seed() {
     return await this.employeeService.seed();
   }
+
   @Get(':employeeId')
   async getEmployeeById(@Param('employeeId') employeeId: string) {
-    return this.employeeService.searchEmployeeById(+employeeId);
+    return await this.employeeService.searchEmployeeById(+employeeId);
   }
 
   @Delete(':id')
   async deleteEmployeeById() {
-    return this.employeeService.deleteEmployeeById(7);
+    return await this.employeeService.deleteEmployeeById(7);
   }
 }
