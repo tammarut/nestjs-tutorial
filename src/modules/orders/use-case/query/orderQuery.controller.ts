@@ -7,11 +7,7 @@ export class OrdersController {
 
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
-    try {
-      const result = await this.orderService.findOne(id);
-      return result;
-    } catch (err) {
-      throw err;
-    }
+    const result = await this.orderService.findOne(id);
+    return result;
   }
 }

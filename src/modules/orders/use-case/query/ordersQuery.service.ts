@@ -38,6 +38,8 @@ export class OrdersService {
       throw new Error(`Not found this orderId ${orderId}`);
     }
     return order;
+
+    // Without JOIN
     // try {
     //   const order = await this.orderRepository.findOne({
     //     where: { id: orderId },
