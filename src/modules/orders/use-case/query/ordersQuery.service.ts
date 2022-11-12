@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import _ from 'radash';
 import { Repository } from 'typeorm';
 import { OrderEntity } from '../../repository/order.entity';
 
@@ -24,14 +23,20 @@ export class OrdersService {
     // const order = await this.orderRepository.findOneBy({ id: id });
 
     // ———————— Join tables —————————
-    const [err, order] = await _.try(this.orderRepository.findOne)({
-      where: { id: orderId },
-      relations: { orderItems: true },
-    });
-    if (err) {
-      this.logger.error(err.message, err.stack);
-      throw err;
-    }
+    // const [err, order] = await _.try(this.orderRepository.findOne)({
+    //   where: { id: orderId },
+    //   relations: { orderItems: true },
+    // });
+    // const order = await this.orderRepository.findOne({
+    //   where: { id: orderId },
+    //   relations: { orderItems: true },
+    // });
+
+    const order = await this.orderRepository
+      .createQueryBuilder('order')
+      .innerJoinAndSelect('order.orderItems', 'orderItems')
+      .where('order.id = :orderId', { orderId })
+      .getOne();
 
     if (!order) {
       this.logger.error({ id: 'query-order-error' }, `Not found this orderId (${orderId})`);
