@@ -39,6 +39,17 @@ export class OrdersService {
     }
     return order;
 
+    // const shopeeOrder = await this.shopeeOrderRepo
+    // .createQueryBuilder('shopeeOrder')
+    // .innerJoinAndMapMany(
+    //     'shopeeOrder.orderItems',
+    //     ShopeeOrderItemEntity,
+    //     'orderItems',
+    //     'orderItems.ordersn = shopeeOrder.ordersn'
+    // )
+    // .where('shopeeOrder.ordersn = :ordersn', { ordersn: ordersn })
+    // .getOne();
+
     // Without JOIN
     // try {
     //   const order = await this.orderRepository.findOne({
