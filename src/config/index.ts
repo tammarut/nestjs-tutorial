@@ -19,7 +19,7 @@ enum Environment {
   TEST = 'test',
 }
 
-export type ConfigSchema = {
+export interface ConfigSchema {
   readonly NODE_ENV: string;
   readonly PORT: number;
   readonly DATABASE_HOST: string;
@@ -27,7 +27,7 @@ export type ConfigSchema = {
   readonly DATABASE_USERNAME: string;
   readonly DATABASE_PASSWORD: string;
   readonly DATABASE_NAME: string;
-};
+}
 
 export const CONFIG_SCHEMA = Joi.object<Readonly<ConfigSchema>>({
   // ───────── NodeJS ─────────
