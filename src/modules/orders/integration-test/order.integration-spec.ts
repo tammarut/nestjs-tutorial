@@ -1,7 +1,6 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
-import fs from 'fs';
 import { ConfigSchema } from 'src/config';
 import { Repository } from 'typeorm';
 import { OrderEntity } from '../repository/order.entity';
@@ -29,12 +28,10 @@ describe('OrdersService Integration test', () => {
               database: configService.get('DATABASE_NAME'),
               entities: [OrderEntity, OrderItemEntity],
               port: configService.get('DATABASE_PORT'),
-              ssl: {
-                ca: fs.readFileSync('cacert-2022-07-19.pem'),
-              },
               bigNumberStrings: false,
-              synchronize: false,
-              logging: false,
+              synchronize: true,
+              logging: true,
+              dropSchema: true,
             };
           },
         }),
