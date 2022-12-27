@@ -19,7 +19,11 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:integration": "DOTENV_CONFIG_PATH=.env.test jest -i --no-cache --config ./jest-integration.json",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "typeorm": "DOTENV_CONFIG_PATH=.env.test npm run build && npx typeorm -d dist/database/mysql/data-source.js",
+    "migration:generate": "DOTENV_CONFIG_PATH=.env.test npm run typeorm -- migration:generate",
+    "migration:run": "npm run typeorm -- migration:run",
+    "migration:revert": "npm run typeorm -- migration:revert"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",

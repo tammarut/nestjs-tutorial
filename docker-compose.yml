@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  database:
+  mysql_db:
     image: mysql:8.0
     container_name: "mysqldb-8.0"
     cap_add:
@@ -15,9 +15,21 @@ services:
       - "3306:3306"
     command: mysqld --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
-      - database:/var/lib/mysql
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_db:/var/lib/mysql
+      - ./mysql_db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  mongodb:
+    container_name: mongodb-4.4
+    image: mongo:4.4-focal
+    volumes: 
+      - ./data:/data/db
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
 
 volumes:
-  database:
+  mysql_db:
     driver: local
+  data:
