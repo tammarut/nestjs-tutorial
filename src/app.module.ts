@@ -9,6 +9,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigSchema, CONFIG_SCHEMA } from './config';
 import { BooksModule } from './modules/books/books.module';
+import { CampersModule } from './modules/campers/campers.module';
 import { EmployeesModule } from './modules/employees/employees.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { PhotoModule } from './photos/photos.module';
@@ -71,6 +72,7 @@ import { PhotoModule } from './photos/photos.module';
     PhotoModule,
     OrdersModule,
     EmployeesModule,
+    CampersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
